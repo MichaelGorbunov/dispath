@@ -1,0 +1,25 @@
+{% extends 'mailing/base.html' %}
+
+{% block title %}Получатели{% endblock %}
+
+{% block content %}
+<div class="row text-center">
+    {% for recipient in recipients %}
+        <div class="col-3">
+
+            <div class="card mb-4 box-shadow">
+                <div class="card-header">
+                    <h4 class="my-0 font-weight-normal">{{recipient.full_name}} </h4>
+                </div>
+                <div class="card-body">
+
+                    <p class="card-text">{{recipient.comment|truncatechars:100}}</p>
+                    <p class="card-text">{{recipient.email}}</p>
+
+                </div>
+            </div>
+
+        </div>
+    {% endfor %}
+    </div>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'mailing/base.html' %}
+
+{% block title %}Добавить/Редактировать сообщение{% endblock %}
+
+{% block content %}
+
+        <h4 class="mb-4">Сообщение</h4>
+
+
+            <a href="{% url 'mailing:message_create' %}" class="btn btn-primary mb-3">Создать сообщение</a>
+
+
+
+
+        <ul class="list-group">
+            {% for message in messages %}
+            <div class="post">
+                <a href="{% url 'mailing:message_update' message.pk %}">{{ message.subject }}</a>
+            </div>
+
+
+            {% endfor %}
+        </ul>
+
+{% endblock %}

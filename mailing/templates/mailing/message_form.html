@@ -1,13 +1,13 @@
 <!-- recipient_form.html -->
 {% extends 'mailing/base.html' %}
 
-{% block title %}Добавить/Редактировать получателя{% endblock %}
+{% block title %}Добавить/Редактировать сообщение{% endblock %}
 
 {% block content %}
 {% if object%}
-<h4>Редактирование получателя</h4>
+<h4>Редактирование сообщение</h4>
 {% else %}
-<h4>Создание получателя</h4>
+<h4>Создание сообщение</h4>
 {% endif %}
 
 
@@ -16,7 +16,7 @@
     {{ form.non_field_errors }}
     {{ form.as_p }}
     <button type="submit" class="btn btn-primary">Сохранить</button>
-    <a href="{% url 'mailing:recipient_list' %}" class="btn btn-secondary">Отмена</a>
+    <a href="{% url 'mailing:message_list' %}" class="btn btn-secondary">Отмена</a>
 
 </form>
 {% endblock %}
