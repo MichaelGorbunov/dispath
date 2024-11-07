@@ -20,6 +20,10 @@
     {% if object%}
     <a href="{% url 'mailing:mailing_delete' mailing.pk %}" class="btn btn-danger">Удалить</a>
     {% endif %}
+     {% if object%}
+    <a href="{% url 'mailing:mailing_send' mailing.pk %}" class="btn btn-danger">Запустить рассылку</a>
+    {% endif %}
+
 
 </form>
 {% endblock %}

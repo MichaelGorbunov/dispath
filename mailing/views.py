@@ -1,9 +1,14 @@
 from django.shortcuts import render
+from django.views import View
+from django.contrib import messages
+from django.shortcuts import render, get_object_or_404, redirect
 from .forms import RecipientForm, MailingForm, MessageForm
 from django.views.generic.edit import CreateView, UpdateView,DeleteView
 from django.views.generic import DetailView, ListView, TemplateView
-from .models import Mailing, Message, Recipient
+from .models import Mailing, Message, Recipient,MailingAttempt
 from django.urls import reverse, reverse_lazy
+from django.core.mail import send_mail
+from django.conf import settings
 
 
 # Create your views here.
@@ -99,3 +104,49 @@ class MailingListView(ListView):
     model = Mailing
     template_name = "mailing/mailing_list.html"
     context_object_name = "mailings"
+
+
+# Отправка рассылки вручную
+class MailingSendView(View):
+    def get(self, request, pk, *args, **kwargs):
+        mailing = get_object_or_404(Mailing, pk=pk)
+        return render(request, 'mailing/mailing_send.html', {'mailing': mailing})
+
+    def post(self, request, pk, *args, **kwargs):
+        mailing = get_object_or_404(Mailing, pk=pk)
+
+        # Проверяем, что статус рассылки "Создана"
+        if mailing.status == 'Создана':
+            recipients = mailing.recipients.all()
+
+            # Проходим по каждому получателю
+            for recipient in recipients:
+                try:
+                    # Попытка отправки письма
+                    send_mail(
+                        subject=mailing.message.subject,
+                        message=mailing.message.body,
+                        from_email=settings.EMAIL_HOST_USER,
+                        recipient_list=[recipient.email],
+                    )
+                    # Если письмо отправлено успешно, создаем запись в попытках
+                    MailingAttempt.objects.create(
+                        mailing=mailing,
+                        status='Успешно',
+                        server_response='Сообщение отправлено успешно',
+                    )
+                except Exception as e:
+                   MailingAttempt.objects.create(
+                        mailing=mailing,
+                        status='Не успешно',
+                        server_response=str(e),
+                    )
+            # Обновляем статус рассылки после завершения попыток отправки
+            mailing.status = 'Запущена'
+            mailing.save()
+            messages.success(request, 'Рассылка отправлена!')
+        else:
+            messages.error(request, 'Эта рассылка уже была отправлена.')
+
+
+        return redirect("mailing:mailing_list")
