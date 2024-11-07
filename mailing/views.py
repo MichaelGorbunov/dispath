@@ -150,3 +150,21 @@ class MailingSendView(View):
 
 
         return redirect("mailing:mailing_list")
+
+
+class HomePageView(TemplateView):
+    template_name = 'mailing/home.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Количество всех рассылок
+        context['total_mailings'] = Mailing.objects.count()
+
+        # Количество активных рассылок (со статусом 'Запущена')
+        context['active_mailings'] = Mailing.objects.filter(status='Запущена').count()
+
+        # Количество уникальных получателей
+        context['unique_recipients'] = Recipient.objects.distinct().count()
+
+        return context

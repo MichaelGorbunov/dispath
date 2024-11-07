@@ -155,6 +155,6 @@ EMAIL_USE_SSL = True
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # выводим в консоль
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# на почту
+# # на почту
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, "mail")
