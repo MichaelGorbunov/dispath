@@ -8,11 +8,16 @@ class Recipient(models.Model):
     full_name = models.CharField(max_length=255)
     comment = models.TextField(blank=True, null=True)
 
+    def __str__(self):
+        return self.full_name #внятный вывод при отображении через foregrein_key
+
 
 class Message(models.Model):
     """Сообщение"""
     subject = models.CharField(max_length=255)
     body = models.TextField()
+    def __str__(self):
+        return self.subject #внятный вывод при отображении через foregrein_key
 
 
 class Mailing(models.Model):

@@ -22,6 +22,12 @@ class RecipientListView(ListView):
     template_name = "mailing/recipient_list.html"
     context_object_name = "recipients"
 
+class RecipientDeleteView(DeleteView):
+    """удаление получателя"""
+
+    model = Recipient
+    template_name = "mailing/recipient_confirm_delete.html"
+    success_url = reverse_lazy('mailing:recipient_list')
 
 class RecipientCreateView(CreateView):
     """view для создания получателя рассылки"""
@@ -59,13 +65,20 @@ class MessageCreateView(CreateView):
     template_name = 'mailing/message_form.html'  # Шаблон, который будет использоваться для отображения формы
     success_url = reverse_lazy('mailing:message_list')  # URL, на который будет перенаправлен пользователь после успешной отправки формы
 
+class MessageDeleteView(DeleteView):
+    """удаление сообщения"""
+
+    model = Message
+    template_name = "mailing/message_confirm_delete.html"
+    success_url = reverse_lazy('mailing:message_list')
+
 
 class MailingCreateView(CreateView):
     """view для создания рассылки"""
     model = Mailing  # Указываем модель, с которой будет работать это представление
     form_class = MailingForm  # Указываем форму, которая будет использоваться для ввода данных
     template_name = 'mailing/mailing_form.html'  # Шаблон, который будет использоваться для отображения формы
-    success_url = '/base/'  # URL, на который будет перенаправлен пользователь после успешной отправки формы
+    success_url = reverse_lazy('mailing:mailing_list')  # URL, на который будет перенаправлен пользователь после успешной отправки формы
 
 
 class MailingUpdateView(UpdateView):
@@ -73,5 +86,16 @@ class MailingUpdateView(UpdateView):
     model = Mailing  # Указываем модель, с которой будет работать это представление
     form_class = MailingForm  # Указываем форму, которая будет использоваться для ввода данных
     template_name = 'mailing/mailing_form.html'  # Шаблон, который будет использоваться для отображения формы
-    success_url = '/base/'  # URL, на который будет перенаправлен пользователь после успешной отправки формы
+    success_url = reverse_lazy('mailing:mailing_list')  # URL, на который будет перенаправлен пользователь после успешной отправки формы
 
+class MailingDeleteView(DeleteView):
+    """удаление сообщения"""
+
+    model = Mailing
+    template_name = "mailing/mailing_confirm_delete.html"
+    success_url = reverse_lazy('mailing:mailing_list')
+
+class MailingListView(ListView):
+    model = Mailing
+    template_name = "mailing/mailing_list.html"
+    context_object_name = "mailings"
