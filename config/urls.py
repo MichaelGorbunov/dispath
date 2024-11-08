@@ -22,5 +22,6 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path('mailing/', include('mailing.urls')),
     # path('', include('mailing.urls')),
+    path('users/', include('users.urls')),
 
 ]
