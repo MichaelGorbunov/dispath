@@ -122,6 +122,18 @@ class MailingListView(ListView):
     template_name = "mailing/mailing_list.html"
     context_object_name = "mailings"
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        user = self.request.user
+
+        # Разрешить менеджерам просматривать всех получателей
+        if user.is_staff or user.has_perm('users.can_disabling_users'):
+            return queryset
+        else:
+            queryset = queryset.filter(ownership=user)
+            return queryset
+
+
 
 # Отправка рассылки вручную
 class MailingSendView(View):
