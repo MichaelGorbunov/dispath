@@ -10,6 +10,7 @@ from django.urls import reverse, reverse_lazy
 from django.core.mail import send_mail
 from django.conf import settings
 
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 # Create your views here.
 
@@ -34,12 +35,21 @@ class RecipientDeleteView(DeleteView):
     template_name = "mailing/recipient_confirm_delete.html"
     success_url = reverse_lazy('mailing:recipient_list')
 
-class RecipientCreateView(CreateView):
+class RecipientCreateView(LoginRequiredMixin,CreateView):
     """view для создания получателя рассылки"""
     model = Recipient  # Указываем модель, с которой будет работать это представление
     form_class = RecipientForm  # Указываем форму, которая будет использоваться для ввода данных
     template_name = 'mailing/recipient_form.html'  # Шаблон, который будет использоваться для отображения формы
-    success_url = reverse_lazy('mailing:recipient_list')  # URL, на который будет перенаправлен пользователь после успешной отправки формы
+    login_url = reverse_lazy('users:login')
+    success_url = reverse_lazy('mailing:recipient_list')
+
+    def form_valid(self, form):
+        recipient = form.save()
+        user = self.request.user
+        recipient.ownership = user
+        recipient.save()
+        return super().form_valid(form)
+
 
 
 class RecipientUpdateView(UpdateView):

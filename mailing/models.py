@@ -1,4 +1,5 @@
 from django.db import models
+from users.models import CustomUser
 
 
 # Create your models here.
@@ -7,6 +8,12 @@ class Recipient(models.Model):
     email = models.EmailField(unique=True)
     full_name = models.CharField(max_length=255)
     comment = models.TextField(blank=True, null=True)
+    ownership = models.ForeignKey(
+        CustomUser,
+        verbose_name='Владелец',
+        blank=True, null=True,
+        on_delete=models.SET_NULL,
+    )
 
     def __str__(self):
         return self.full_name #внятный вывод при отображении через foregrein_key
@@ -39,6 +46,12 @@ class Mailing(models.Model):
 
     )
     recipients = models.ManyToManyField(Recipient, verbose_name='Клиент', related_name='client')
+    ownership = models.ForeignKey(
+        CustomUser,
+        verbose_name='Владелец',
+        blank=True, null=True,
+        on_delete=models.SET_NULL,
+    )
 
 class MailingAttempt(models.Model):
     """попытка рассылки"""
