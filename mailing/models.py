@@ -16,15 +16,16 @@ class Recipient(models.Model):
     )
 
     def __str__(self):
-        return self.full_name #внятный вывод при отображении через foregrein_key
+        return self.full_name  # внятный вывод при отображении через foregrein_key
 
 
 class Message(models.Model):
     """Сообщение"""
     subject = models.CharField(max_length=255)
     body = models.TextField()
+
     def __str__(self):
-        return self.subject #внятный вывод при отображении через foregrein_key
+        return self.subject  # внятный вывод при отображении через foregrein_key
 
 
 class Mailing(models.Model):
@@ -38,7 +39,7 @@ class Mailing(models.Model):
 
     start_time = models.DateTimeField(verbose_name='Начало отправки рассылки')
     end_time = models.DateTimeField(verbose_name='Последняя дата отправки рассылки', null=True, blank=True)
-    status = models.CharField(max_length=10,choices=STATUS_CHOICES, default='Создана')
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Создана')
     message = models.ForeignKey(
         Message, on_delete=models.SET_NULL,
         related_name="message",
@@ -52,6 +53,8 @@ class Mailing(models.Model):
         blank=True, null=True,
         on_delete=models.SET_NULL,
     )
+    enabled = models.BooleanField(default=True)
+
 
 class MailingAttempt(models.Model):
     """попытка рассылки"""
@@ -64,4 +67,3 @@ class MailingAttempt(models.Model):
         null=True, blank=True,
 
     )
-

@@ -3,6 +3,7 @@ from django.views import View
 from django.contrib import messages
 from django.shortcuts import render, get_object_or_404, redirect
 from .forms import RecipientForm, MailingForm, MessageForm
+from .forms import ModeratorMailingForm
 from django.views.generic.edit import CreateView, UpdateView,DeleteView
 from django.views.generic import DetailView, ListView, TemplateView
 from .models import Mailing, Message, Recipient,MailingAttempt
@@ -27,6 +28,16 @@ class RecipientListView(ListView):
     model = Recipient
     template_name = "mailing/recipient_list.html"
     context_object_name = "recipients"
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        user = self.request.user
+
+        # Разрешить менеджерам просматривать всех получателей
+        if user.has_perm('users.can_disabling_users'):
+            return queryset
+        else:
+            queryset = queryset.filter(ownership=user)
+            return queryset
 
 class RecipientDeleteView(DeleteView):
     """удаление получателя"""
@@ -65,6 +76,8 @@ class MessageListView(ListView):
     template_name = "mailing/message_list.html"
     context_object_name = "messages"
 
+
+
 class MessageUpdateView(UpdateView):
     """view для обновления сообщения"""
     model = Message  # Указываем модель, с которой будет работать это представление
@@ -88,13 +101,20 @@ class MessageDeleteView(DeleteView):
     success_url = reverse_lazy('mailing:message_list')
 
 
-class MailingCreateView(CreateView):
+class MailingCreateView(LoginRequiredMixin,CreateView):
     """view для создания рассылки"""
     model = Mailing  # Указываем модель, с которой будет работать это представление
     form_class = MailingForm  # Указываем форму, которая будет использоваться для ввода данных
     template_name = 'mailing/mailing_form.html'  # Шаблон, который будет использоваться для отображения формы
+    login_url = reverse_lazy('users:login')
     success_url = reverse_lazy('mailing:mailing_list')  # URL, на который будет перенаправлен пользователь после успешной отправки формы
 
+    def get_form_class(self):
+        # Пример: выбор формы в зависимости от пользователя
+        if self.request.user.has_perm('mailing.can_disabling_mailing'):
+            return ModeratorMailingForm # Форма для суперпользователей
+        else:
+            return MailingForm # Форма для обычных пользователей
     def form_valid(self, form):
         mailing = form.save()
         user = self.request.user
@@ -103,23 +123,35 @@ class MailingCreateView(CreateView):
         return super().form_valid(form)
 
 
-class MailingUpdateView(UpdateView):
+
+
+class MailingUpdateView(LoginRequiredMixin,UpdateView):
     """view для создания рассылки"""
     model = Mailing  # Указываем модель, с которой будет работать это представление
     form_class = MailingForm  # Указываем форму, которая будет использоваться для ввода данных
     template_name = 'mailing/mailing_form.html'  # Шаблон, который будет использоваться для отображения формы
+    login_url = reverse_lazy('users:login')
     success_url = reverse_lazy('mailing:mailing_list')  # URL, на который будет перенаправлен пользователь после успешной отправки формы
 
-class MailingDeleteView(DeleteView):
-    """удаление сообщения"""
+    def get_form_class(self):
 
+        # Пример: выбор формы в зависимости от пользователя
+        if self.request.user.has_perm('users.can_disabling_users'):
+            return ModeratorMailingForm # Форма для суперпользователей
+        else:
+            return MailingForm # Форма для обычных пользователей
+
+class MailingDeleteView(LoginRequiredMixin,DeleteView):
+    """удаление сообщения"""
+    login_url = reverse_lazy('users:login')
     model = Mailing
     template_name = "mailing/mailing_confirm_delete.html"
     success_url = reverse_lazy('mailing:mailing_list')
 
-class MailingListView(ListView):
+class MailingListView(LoginRequiredMixin,ListView):
     model = Mailing
     template_name = "mailing/mailing_list.html"
+    login_url = reverse_lazy('users:login')
     context_object_name = "mailings"
 
     def get_queryset(self):
@@ -127,7 +159,7 @@ class MailingListView(ListView):
         user = self.request.user
 
         # Разрешить менеджерам просматривать всех получателей
-        if user.is_staff or user.has_perm('users.can_disabling_users'):
+        if user.has_perm('users.can_disabling_users'):
             return queryset
         else:
             queryset = queryset.filter(ownership=user)
@@ -197,3 +229,5 @@ class HomePageView(TemplateView):
         context['unique_recipients'] = Recipient.objects.distinct().count()
 
         return context
+
+

@@ -22,4 +22,14 @@ class MailingForm(forms.ModelForm):
     class Meta:
         model = Mailing
         fields = "__all__"
-        exclude = ["ownership"]
+        exclude = ["ownership","enabled"]
+
+
+
+class ModeratorMailingForm(forms.ModelForm):
+    class Meta:
+        model = Mailing
+        fields = "__all__"
+        # exclude = ["ownership"]
+
+

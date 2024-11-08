@@ -4,7 +4,8 @@ from django.contrib.auth import login
 from .forms import CustomUserCreationForm, CustomUserUpdateForm
 from django.views.generic.edit import FormView
 
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin,PermissionRequiredMixin
+from django.views.generic import DetailView, ListView, TemplateView
 from django.contrib.auth.views import LoginView
 from django.conf import settings
 from django.views.generic.edit import UpdateView
@@ -122,3 +123,11 @@ def password_reset_complete(request):
 
 def password_reset_invalid(request):
     return render(request, "users/password_reset_invalid.html")
+
+
+class UsersListView(PermissionRequiredMixin, ListView):
+    """Просмотр списка пользователей"""
+    model = CustomUser
+    template_name = 'users/user_list.html'
+    context_object_name = 'object_list_users'
+    permission_required = "users.can_disabling_users"
