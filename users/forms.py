@@ -28,3 +28,22 @@ class CustomUserUpdateForm(forms.ModelForm):
             self.fields[field].widget.attrs.update({'class': 'form-control'})
 
 
+class PasswordResetRequestForm(forms.Form):
+    """Форма запрашивает у пользователя email для восстановления пароля"""
+    email = forms.EmailField(label="Введите ваш email")
+
+
+class SetNewPasswordForm(forms.Form):
+    """Форма для ввода нового пароля"""
+    new_password = forms.CharField(widget=forms.PasswordInput, label="Новый пароль")
+    confirm_password = forms.CharField(widget=forms.PasswordInput, label="Подтвердите пароль")
+
+    def clean(self):
+        cleaned_data = super().clean()
+        new_password = cleaned_data.get("new_password")
+        confirm_password = cleaned_data.get("confirm_password")
+
+        if new_password != confirm_password:
+            raise forms.ValidationError("Пароли не совпадают.")
+
+

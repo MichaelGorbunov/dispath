@@ -10,10 +10,14 @@ from django.conf import settings
 from django.views.generic.edit import UpdateView
 from users.models import CustomUser
 
+from users.forms import (PasswordResetRequestForm, SetNewPasswordForm)
+
 
 import secrets
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404, redirect
 
 class RegisterView(FormView):
     template_name = 'register.html'
@@ -63,3 +67,58 @@ def email_verification(request, token):
     user.is_active = True
     user.save()
     return redirect(reverse('users:login'))
+
+def password_reset_request(request):
+    if request.method == "POST":
+        form = PasswordResetRequestForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data["email"]
+            user = get_object_or_404(CustomUser, email=email)
+            token = default_token_generator.make_token(user)
+            uid = urlsafe_base64_encode(str(user.pk).encode())
+            reset_url = request.build_absolute_uri(
+                reverse("users:password_reset_confirm", kwargs={"uidb64": uid, "token": token})
+            )
+            send_mail(
+                "Восстановление пароля",
+                f"Перейдите по ссылке, чтобы сбросить пароль: {reset_url}",
+                settings.EMAIL_HOST_USER,
+                [email],
+            )
+            return redirect("users:password_reset_done")
+    else:
+        form = PasswordResetRequestForm()
+    return render(request, "users/password_reset_form.html", {"form": form})
+
+
+def password_reset_confirm(request, uidb64, token):
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = CustomUser.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError,CustomUser.DoesNotExist):
+        user = None
+
+    if user is not None and default_token_generator.check_token(user, token):
+        if request.method == "POST":
+            form = SetNewPasswordForm(request.POST)
+            if form.is_valid():
+                user.set_password(form.cleaned_data["new_password"])
+                user.save()
+                return redirect("users:password_reset_complete")
+        else:
+            form = SetNewPasswordForm()
+        return render(request, "users/password_reset_confirm.html", {"form": form})
+    else:
+        return redirect("users:password_reset_invalid")
+
+
+def password_reset_done(request):
+    return render(request, "users/password_reset_done.html")
+
+
+def password_reset_complete(request):
+    return render(request, "users/password_reset_complete.html")
+
+
+def password_reset_invalid(request):
+    return render(request, "users/password_reset_invalid.html")
