@@ -1,4 +1,4 @@
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.core.mail import send_mail
 from django.contrib.auth import login
 from .forms import CustomUserCreationForm, CustomUserUpdateForm
@@ -11,23 +11,35 @@ from django.views.generic.edit import UpdateView
 from users.models import CustomUser
 
 
+import secrets
+
+from django.shortcuts import get_object_or_404, redirect
+
 class RegisterView(FormView):
     template_name = 'register.html'
     form_class = CustomUserCreationForm
     success_url = reverse_lazy('mailing:home')
 
+    model = CustomUser
+    form_class = CustomUserCreationForm
+    success_url = reverse_lazy('users:login')
+
     def form_valid(self, form):
         user = form.save()
-        login(self.request, user)
-        # self.send_welcome_email(user.email, user.username)
-        return super().form_valid(form)
+        user.is_active = False
+        token = secrets.token_hex(16)
+        user.token = token
+        user.save()
+        host = self.request.get_host()
+        url = f'http://{host}/users/email-confirm/{token}/'
+        send_mail(
+            subject='Подтверждение почты',
+            message=f'Перейдите по ссылке для подтверждения почты {url}',
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=[user.email],
+        )
 
-    # def send_welcome_email(self, user_email, user_name):
-    #     subject = 'Добро пожаловать в наш сервис'
-    #     message = f'{user_name},cпасибо, что зарегистрировались в нашем сервисе!'
-    #     from_email = settings.EMAIL_HOST_USER
-    #     recipient_list = [user_email]
-    #     send_mail(subject, message, from_email, recipient_list)
+        return super().form_valid(form)
 
 
 class UserUpdateView(LoginRequiredMixin, UpdateView):
@@ -44,3 +56,10 @@ class UserUpdateView(LoginRequiredMixin, UpdateView):
 class CustomLoginView(LoginView):
     template_name = 'users/login.html'
     next_page = reverse_lazy('mailing:home')
+
+
+def email_verification(request, token):
+    user = get_object_or_404(CustomUser, token=token)
+    user.is_active = True
+    user.save()
+    return redirect(reverse('users:login'))
