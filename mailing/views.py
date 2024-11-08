@@ -95,6 +95,13 @@ class MailingCreateView(CreateView):
     template_name = 'mailing/mailing_form.html'  # Шаблон, который будет использоваться для отображения формы
     success_url = reverse_lazy('mailing:mailing_list')  # URL, на который будет перенаправлен пользователь после успешной отправки формы
 
+    def form_valid(self, form):
+        mailing = form.save()
+        user = self.request.user
+        mailing.ownership = user
+        mailing.save()
+        return super().form_valid(form)
+
 
 class MailingUpdateView(UpdateView):
     """view для создания рассылки"""
