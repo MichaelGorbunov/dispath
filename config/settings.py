@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "mailing",# Ваше новое приложение
-
+    "users",
 ]
 
 MIDDLEWARE = [
@@ -158,3 +158,4 @@ EMAIL_USE_SSL = True
 # # на почту
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, "mail")
+AUTH_USER_MODEL = 'users.CustomUser'
