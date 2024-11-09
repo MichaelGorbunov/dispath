@@ -20,8 +20,10 @@
 
 
     {% if object%}
-            {% if perms.user.mailing_permission %}
+            {% if perms.users.mailing_permission %}
                 <a href="{% url 'mailing:mailing_delete' mailing.pk %}" class="btn btn-danger">Удалить</a>
+
+                <a href="{% url 'mailing:mailing_report' mailing.pk %}" class="btn btn-danger">Статистика</a>
             {% endif %}
 
 

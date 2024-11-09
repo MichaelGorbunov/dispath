@@ -10,6 +10,7 @@ from .models import Mailing, Message, Recipient,MailingAttempt
 from django.urls import reverse, reverse_lazy
 from django.core.mail import send_mail
 from django.conf import settings
+from django.core.exceptions import PermissionDenied
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -230,4 +231,24 @@ class HomePageView(TemplateView):
 
         return context
 
+class MailingReportView(DetailView):
+    model = Mailing
+    template_name = 'mailing/mailing_report.html'
+    context_object_name = 'mailing'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['successful_attempts'] = self.object.attempts.filter(status='Успешно').count()
+        context['failed_attempts'] = self.object.attempts.filter(status='Не успешно').count()
+        context['total_attempts'] = self.object.attempts.count()
+        return context
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+
+        # Ограничение: проверка, что текущий пользователь является владельцем или имеет нужные права
+        # if request.user != self.object.ownership and not request.user.has_perm('mailings.viewing_statistics'):
+        #     raise PermissionDenied("У вас нет прав для просмотра отчета этой рассылки.")
+
+        return super().get(request, *args, **kwargs)
 
