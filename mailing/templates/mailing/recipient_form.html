@@ -18,7 +18,9 @@
     <button type="submit" class="btn btn-primary">Сохранить</button>
     <a href="{% url 'mailing:recipient_list' %}" class="btn btn-secondary">Отмена</a>
     {% if object%}
-    <a href="{% url 'mailing:recipient_delete' recipient.pk %}" class="btn btn-danger">Удалить</a>
+            {% if perms.user.mailing_permission %}
+            <a href="{% url 'mailing:recipient_delete' recipient.pk %}" class="btn btn-danger">Удалить</a>
+            {% endif %}
     {% endif %}
 
 </form>

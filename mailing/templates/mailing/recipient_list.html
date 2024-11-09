@@ -6,8 +6,10 @@
 
         <h4 class="mb-4">Список получателей</h4>
 
+            {% if perms.user.mailing_permission %}
+                <a href="{% url 'mailing:recipient_create' %}" class="btn btn-primary mb-3">Создать получателя</a>
+            {% endif %}
 
-            <a href="{% url 'mailing:recipient_create' %}" class="btn btn-primary mb-3">Создать получателя</a>
 
 
 
