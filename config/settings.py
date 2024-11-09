@@ -159,3 +159,13 @@ EMAIL_USE_SSL = True
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, "mail")
 AUTH_USER_MODEL = 'users.CustomUser'
+
+
+CACHES_ENABLED = True
+if CACHES_ENABLED:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+            'LOCATION': os.getenv('REDIS_LOCATION')
+        }
+    }
