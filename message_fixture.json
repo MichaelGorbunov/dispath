@@ -1,0 +1,74 @@
+[
+{
+    "model": "mailing.message",
+    "pk": 1,
+    "fields": {
+        "subject": "Распродажа",
+        "body": "Распродажа Распродажа"
+    }
+},
+{
+    "model": "mailing.message",
+    "pk": 2,
+    "fields": {
+        "subject": "Скидка 50%",
+        "body": " Скидка 50% Скидка 50%"
+    }
+},
+{
+    "model": "mailing.message",
+    "pk": 3,
+    "fields": {
+        "subject": "Скидка 30%",
+        "body": "Скидка 30% Скидка 30%"
+    }
+},
+{
+    "model": "mailing.message",
+    "pk": 4,
+    "fields": {
+        "subject": "Ликвидация",
+        "body": "Ликвидация Ликвидация"
+    }
+},
+{
+    "model": "mailing.message",
+    "pk": 5,
+    "fields": {
+        "subject": "МегаКэшбек",
+        "body": "МегаКэшбек МегаКэшбек"
+    }
+},
+{
+    "model": "mailing.message",
+    "pk": 6,
+    "fields": {
+        "subject": "Два по цене трёх",
+        "body": "Два по цене трёх Два по цене трёх"
+    }
+},
+{
+    "model": "mailing.message",
+    "pk": 7,
+    "fields": {
+        "subject": "Лови момент",
+        "body": "Лови момент Лови момент"
+    }
+},
+{
+    "model": "mailing.message",
+    "pk": 8,
+    "fields": {
+        "subject": "11.11",
+        "body": "11.11 11.11"
+    }
+},
+{
+    "model": "mailing.message",
+    "pk": 9,
+    "fields": {
+        "subject": "Шоу невиданной щедрости",
+        "body": "Шоу невиданной щедрости Шоу невиданной щедрости"
+    }
+}
+]

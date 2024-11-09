@@ -193,7 +193,7 @@ class MailingSendView(View):
         mailing = get_object_or_404(Mailing, pk=pk)
 
         # Проверяем, что статус рассылки "Создана"
-        if mailing.status == 'Создана':
+        if mailing.status == 'Создана' and mailing.enabled is True:
             recipients = mailing.recipients.all()
 
             # Проходим по каждому получателю
@@ -221,9 +221,9 @@ class MailingSendView(View):
             # Обновляем статус рассылки после завершения попыток отправки
             mailing.status = 'Запущена'
             mailing.save()
-            messages.success(request, 'Рассылка отправлена!')
-        else:
-            messages.error(request, 'Эта рассылка уже была отправлена.')
+            # messages.success(request, 'Рассылка отправлена!')
+        # else:
+        #     messages.error(request, 'Эта рассылка уже была отправлена.')
 
         return redirect("mailing:mailing_list")
 
