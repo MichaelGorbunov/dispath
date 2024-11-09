@@ -1,15 +1,12 @@
 from django import forms
-from .models import Mailing,Message,Recipient
+from .models import Mailing, Message, Recipient
+
+
 class RecipientForm(forms.ModelForm):
     class Meta:
         model = Recipient
         fields = "__all__"
         exclude = ["ownership"]
-
-
-
-
-
 
 
 class MessageForm(forms.ModelForm):
@@ -22,7 +19,16 @@ class MailingForm(forms.ModelForm):
     class Meta:
         model = Mailing
         fields = "__all__"
-        exclude = ["ownership","enabled"]
+        exclude = ["ownership", "enabled"]
+
+    def __init__(self, *args, **kwargs):
+        # Извлекаем текущего пользователя из переданных параметров
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+
+        if user:
+            self.fields['recipients'].queryset = Recipient.objects.filter(ownership_id=user.id)
+            # фильтрация получателей по текущему пользователю
 
 
 
@@ -31,5 +37,3 @@ class ModeratorMailingForm(forms.ModelForm):
         model = Mailing
         fields = "__all__"
         # exclude = ["ownership"]
-
-

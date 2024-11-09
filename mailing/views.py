@@ -137,6 +137,12 @@ class MailingCreateView(LoginRequiredMixin, CreateView):
         mailing.save()
         return super().form_valid(form)
 
+    def get_form_kwargs(self):
+        # Добавляем текущего пользователя в параметры формы
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
 
 class MailingUpdateView(LoginRequiredMixin, UpdateView):
     """view для создания рассылки"""
