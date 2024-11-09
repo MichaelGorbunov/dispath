@@ -12,9 +12,8 @@
         <ul class="list-group">
             {% if perms.users.can_disabling_users %}
                     {% for object in object_list_users %}
-
                         <div class="post">
-                            <a href="">{{ object.username }}</a>
+                        <a href="{% url 'users:user_block' object.pk %}">{{ object.username }}</a>
                         </div>
                     {% empty %}
                             <td colspan="4">Нет доступных пользователей.</td>

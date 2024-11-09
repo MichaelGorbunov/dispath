@@ -46,4 +46,18 @@ class SetNewPasswordForm(forms.Form):
         if new_password != confirm_password:
             raise forms.ValidationError("Пароли не совпадают.")
 
+class CustomUserBlockUpdateForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        # fields = "__all__"
+        fields = [ 'username','is_active' ]
+
+
+        def __init__(self, *args, **kwargs):
+            super(CustomUserBlockUpdateForm, self).__init__(*args, **kwargs)
+            for field_name in self.fields:
+                self.fields[field_name].help_text = ""
+
+
+
 

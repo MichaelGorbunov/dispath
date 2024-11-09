@@ -3,8 +3,7 @@
 {% block title %}
 {% if object%}
 Редактирование
-{% else %}
-Регистрация
+
 {% endif %}
 
 {% endblock %}
@@ -15,8 +14,7 @@
 {% block content %}
 {% if object%}
 <h4>Редактирование пользователя</h4>
-{% else %}
-<h4>Создание пользователя</h4>
+{
 {% endif %}
 
 
@@ -27,14 +25,8 @@
 
   {% if object%}
     <button type="submit" class="btn btn-primary">Сохранить</button>
-  {% else %}
-   <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+
   {% endif %}
-
-
-
-
-
 
   </form>
 {% endblock %}
