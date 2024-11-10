@@ -4,23 +4,20 @@ from .models import CustomUser
 
 
 class CustomUserCreationForm(UserCreationForm):
-
-
     class Meta(UserCreationForm.Meta):
         model = CustomUser
         fields = ('email', 'username')
+
     def __init__(self, *args, **kwargs):
         super(CustomUserCreationForm, self).__init__(*args, **kwargs)
         for field in self.fields:
             self.fields[field].widget.attrs.update({'class': 'form-control'})
 
 
-
-
 class CustomUserUpdateForm(forms.ModelForm):
     class Meta:
         model = CustomUser
-        fields = ['username', 'email',]  # добавьте необходимые поля
+        fields = ['username', 'email', ]  # добавьте необходимые поля
 
     def __init__(self, *args, **kwargs):
         super(CustomUserUpdateForm, self).__init__(*args, **kwargs)
@@ -46,18 +43,14 @@ class SetNewPasswordForm(forms.Form):
         if new_password != confirm_password:
             raise forms.ValidationError("Пароли не совпадают.")
 
+
 class CustomUserBlockUpdateForm(forms.ModelForm):
     class Meta:
         model = CustomUser
         # fields = "__all__"
-        fields = [ 'username','is_active' ]
-
+        fields = ['username', 'is_active']
 
         def __init__(self, *args, **kwargs):
             super(CustomUserBlockUpdateForm, self).__init__(*args, **kwargs)
             for field_name in self.fields:
                 self.fields[field_name].help_text = ""
-
-
-
-

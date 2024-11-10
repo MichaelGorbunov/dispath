@@ -9,10 +9,22 @@
                 <div class="card-header">
                     <h4 class="my-0 font-weight-normal">Вход </h4>
                 </div>
+
+
                 <div class="card-body">
                      <form method="post">
                      {% csrf_token %}
                      {{ form.as_p }}
+                         {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li class="{{ message.tags }}">
+                {{ message|safe }}
+                <a href="#" class="close">✖</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
                      <button type="submit" class="btn btn-lg btn-block btn-outline-primary">Войти</button>
                      </form>
 

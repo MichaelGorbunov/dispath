@@ -1,21 +1,29 @@
-from django import forms
+from django.forms import ModelForm, BooleanField
 from .models import Mailing, Message, Recipient
+class StyleFormMixin:
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            if isinstance(field, BooleanField):
+                field.widget.attrs['class'] = 'form-check-input'
+            else:
+                field.widget.attrs['class'] = 'form-control'
 
 
-class RecipientForm(forms.ModelForm):
+class RecipientForm(StyleFormMixin,ModelForm):
     class Meta:
         model = Recipient
         fields = "__all__"
         exclude = ["ownership"]
 
 
-class MessageForm(forms.ModelForm):
+class MessageForm(StyleFormMixin,ModelForm):
     class Meta:
         model = Message
         fields = "__all__"
 
 
-class MailingForm(forms.ModelForm):
+class MailingForm(StyleFormMixin,ModelForm):
     class Meta:
         model = Mailing
         fields = "__all__"
@@ -32,7 +40,7 @@ class MailingForm(forms.ModelForm):
 
 
 
-class ModeratorMailingForm(forms.ModelForm):
+class ModeratorMailingForm(StyleFormMixin,ModelForm):
     class Meta:
         model = Mailing
         fields = "__all__"

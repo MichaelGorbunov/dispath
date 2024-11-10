@@ -19,6 +19,8 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 
 from django.shortcuts import render, get_object_or_404, redirect
 
+from django.contrib.auth.views import LoginView
+
 
 class RegisterView(FormView):
     template_name = 'register.html'
@@ -143,3 +145,5 @@ class UserBlockUpdateView(LoginRequiredMixin,UpdateView):
     template_name = 'users/user_block.html'  # Шаблон, который будет использоваться для отображения формы
     success_url = reverse_lazy(
         'users:user_list')  # URL, на который будет перенаправлен пользователь после успешной отправки формы
+
+
