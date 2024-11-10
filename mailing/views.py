@@ -161,6 +161,12 @@ class MailingUpdateView(LoginRequiredMixin, UpdateView):
         else:
             return MailingForm  # Форма для обычных пользователей
 
+    def get_form_kwargs(self):
+        # Добавляем текущего пользователя в параметры формы
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
 
 class MailingDeleteView(LoginRequiredMixin, DeleteView):
     """удаление сообщения"""
