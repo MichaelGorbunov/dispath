@@ -25,6 +25,7 @@
 
   {% if object%}
     <button type="submit" class="btn btn-primary">Сохранить</button>
+    <a href="{% url 'mailing:home' %}" class="btn btn-danger">Отмена</a>
 
   {% endif %}
 
