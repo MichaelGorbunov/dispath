@@ -44,4 +44,16 @@ class ModeratorMailingForm(StyleFormMixin,ModelForm):
     class Meta:
         model = Mailing
         fields = "__all__"
-        # exclude = ["ownership"]
+
+        exclude = ["ownership"]
+    def __init__(self, *args, **kwargs):#фикс ошибки когда модератор смотрит рассылки
+        # Извлекаем текущего пользователя из переданных параметров
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+
+        instance = kwargs.get('instance')
+        if instance and instance.ownership != user:
+            # example for making 'title' and 'content' fields readonly
+            for field_name in self.fields:
+                if field_name != 'enabled':
+                    self.fields[field_name].widget.attrs['disabled'] = True
