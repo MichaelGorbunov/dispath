@@ -1,5 +1,5 @@
-from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
+from django.core.management.base import BaseCommand
 
 
 class Command(BaseCommand):
@@ -8,11 +8,12 @@ class Command(BaseCommand):
         User = get_user_model()
         user = User.objects.create(
             username="SuperUser",
-            email='admin@webstore.ru',
-
+            email="admin@webstore.ru",
         )
-        user.set_password('123456789')
+        user.set_password("123456789")
         user.is_staff = True
         user.is_superuser = True
         user.save()
-        self.stdout.write(self.style.SUCCESS(f'Создан суперпользователь - {user.email}'))
+        self.stdout.write(
+            self.style.SUCCESS(f"Создан суперпользователь - {user.email}")
+        )

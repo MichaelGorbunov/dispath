@@ -1,7 +1,8 @@
 from django.conf import settings
-from django.core.management.base import BaseCommand
-from mailing.models import Mailing, Message, MailingAttempt
 from django.core.mail import send_mail
+from django.core.management.base import BaseCommand
+
+from mailing.models import Mailing, MailingAttempt
 
 
 class Command(BaseCommand):
@@ -28,17 +29,17 @@ class Command(BaseCommand):
                             # Если письмо отправлено успешно, создаем запись в попытках
                             MailingAttempt.objects.create(
                                 mailing=mailing,
-                                status='Успешно',
-                                server_response='Сообщение отправлено успешно',
+                                status="Успешно",
+                                server_response="Сообщение отправлено успешно",
                             )
                         except Exception as e:
                             MailingAttempt.objects.create(
                                 mailing=mailing,
-                                status='Не успешно',
+                                status="Не успешно",
                                 server_response=str(e),
                             )
                     # Обновляем статус рассылки после завершения попыток отправки
-                    mailing.status = 'Запущена'
+                    mailing.status = "Запущена"
                     mailing.save()
                     # messages.success(request, 'Рассылка отправлена!')
                     # else:

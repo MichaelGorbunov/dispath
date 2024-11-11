@@ -1,7 +1,9 @@
 # services.py
-from .models import Recipient,Message,Mailing
 from django.conf import settings
 from django.core.cache import cache
+
+from .models import Mailing, Message, Recipient
+
 
 class MailingService:
     @staticmethod
@@ -41,4 +43,3 @@ class MailingService:
         else:
             mailings = Mailing.objects.get.all()
         return mailings
-

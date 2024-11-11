@@ -1,35 +1,32 @@
-from django.urls import reverse_lazy, reverse
-from django.core.mail import send_mail
-from django.contrib.auth import login
-from .forms import CustomUserCreationForm, CustomUserUpdateForm, CustomUserBlockUpdateForm
-from django.views.generic.edit import FormView
+import secrets
 
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.views.generic import DetailView, ListView, TemplateView
-from django.contrib.auth.views import LoginView
 from django.conf import settings
-from django.views.generic.edit import UpdateView
+from django.contrib.auth.mixins import (LoginRequiredMixin,
+                                        PermissionRequiredMixin)
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.auth.views import LoginView
+from django.core.mail import send_mail
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse, reverse_lazy
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.views.generic import ListView
+from django.views.generic.edit import FormView, UpdateView
+
+from users.forms import PasswordResetRequestForm, SetNewPasswordForm
 from users.models import CustomUser
 
-from users.forms import (PasswordResetRequestForm, SetNewPasswordForm)
-
-import secrets
-from django.contrib.auth.tokens import default_token_generator
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-
-from django.shortcuts import render, get_object_or_404, redirect
-
-from django.contrib.auth.views import LoginView
+from .forms import (CustomUserBlockUpdateForm, CustomUserCreationForm,
+                    CustomUserUpdateForm)
 
 
 class RegisterView(FormView):
-    template_name = 'register.html'
+    template_name = "register.html"
     form_class = CustomUserCreationForm
-    success_url = reverse_lazy('mailing:home')
+    success_url = reverse_lazy("mailing:home")
 
     model = CustomUser
     form_class = CustomUserCreationForm
-    success_url = reverse_lazy('users:login')
+    success_url = reverse_lazy("users:login")
 
     def form_valid(self, form):
         user = form.save()
@@ -38,10 +35,10 @@ class RegisterView(FormView):
         user.token = token
         user.save()
         host = self.request.get_host()
-        url = f'http://{host}/users/email-confirm/{token}/'
+        url = f"http://{host}/users/email-confirm/{token}/"
         send_mail(
-            subject='Подтверждение почты',
-            message=f'Перейдите по ссылке для подтверждения почты {url}',
+            subject="Подтверждение почты",
+            message=f"Перейдите по ссылке для подтверждения почты {url}",
             from_email=settings.EMAIL_HOST_USER,
             recipient_list=[user.email],
         )
@@ -52,8 +49,8 @@ class RegisterView(FormView):
 class UserUpdateView(LoginRequiredMixin, UpdateView):
     model = CustomUser
     form_class = CustomUserUpdateForm
-    template_name = 'register.html'  # замените на вашу HTML-шаблон
-    success_url = reverse_lazy('mailing:home')  # замените 'profile' на имя вашего URL
+    template_name = "register.html"  # замените на вашу HTML-шаблон
+    success_url = reverse_lazy("mailing:home")  # замените 'profile' на имя вашего URL
 
     def get_object(self):
         # Ensure that the form updates the current logged-in user
@@ -61,15 +58,15 @@ class UserUpdateView(LoginRequiredMixin, UpdateView):
 
 
 class CustomLoginView(LoginView):
-    template_name = 'users/login.html'
-    next_page = reverse_lazy('mailing:home')
+    template_name = "users/login.html"
+    next_page = reverse_lazy("mailing:home")
 
 
 def email_verification(request, token):
     user = get_object_or_404(CustomUser, token=token)
     user.is_active = True
     user.save()
-    return redirect(reverse('users:login'))
+    return redirect(reverse("users:login"))
 
 
 def password_reset_request(request):
@@ -81,7 +78,10 @@ def password_reset_request(request):
             token = default_token_generator.make_token(user)
             uid = urlsafe_base64_encode(str(user.pk).encode())
             reset_url = request.build_absolute_uri(
-                reverse("users:password_reset_confirm", kwargs={"uidb64": uid, "token": token})
+                reverse(
+                    "users:password_reset_confirm",
+                    kwargs={"uidb64": uid, "token": token},
+                )
             )
             send_mail(
                 "Восстановление пароля",
@@ -128,22 +128,23 @@ def password_reset_invalid(request):
     return render(request, "users/password_reset_invalid.html")
 
 
-class UsersListView(LoginRequiredMixin,PermissionRequiredMixin, ListView):
+class UsersListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     """Просмотр списка пользователей"""
+
     model = CustomUser
-    login_url = reverse_lazy('users:login')
-    template_name = 'users/user_list.html'
-    context_object_name = 'object_list_users'
+    login_url = reverse_lazy("users:login")
+    template_name = "users/user_list.html"
+    context_object_name = "object_list_users"
     permission_required = "users.can_disabling_users"
 
 
-class UserBlockUpdateView(LoginRequiredMixin,UpdateView):
+class UserBlockUpdateView(LoginRequiredMixin, UpdateView):
     """view для блокировки разблокировки пользователя"""
+
     model = CustomUser  # Указываем модель, с которой будет работать это представление
     form_class = CustomUserBlockUpdateForm
-    login_url = reverse_lazy('users:login')
-    template_name = 'users/user_block.html'  # Шаблон, который будет использоваться для отображения формы
+    login_url = reverse_lazy("users:login")
+    template_name = "users/user_block.html"  # Шаблон, который будет использоваться для отображения формы
     success_url = reverse_lazy(
-        'users:user_list')  # URL, на который будет перенаправлен пользователь после успешной отправки формы
-
-
+        "users:user_list"
+    )  # URL, на который будет перенаправлен пользователь после успешной отправки формы

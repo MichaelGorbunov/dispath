@@ -1,7 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
+from django.forms import BooleanField, ModelForm
+
 from .models import CustomUser
-from django.forms import ModelForm, BooleanField
 
 
 class StyleFormMixin:
@@ -11,19 +12,15 @@ class StyleFormMixin:
             self.fields[field_name].help_text = "***"
 
             if isinstance(field, BooleanField):
-                field.widget.attrs['class'] = 'form-check-input'
+                field.widget.attrs["class"] = "form-check-input"
             else:
-                field.widget.attrs['class'] = 'form-control'
-
-
-
-
+                field.widget.attrs["class"] = "form-control"
 
 
 class CustomUserCreationForm(StyleFormMixin, UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = CustomUser
-        fields = ('email', 'username')
+        fields = ("email", "username")
 
     # def __init__(self, *args, **kwargs):
     #     super(CustomUserCreationForm, self).__init__(*args, **kwargs)
@@ -34,7 +31,10 @@ class CustomUserCreationForm(StyleFormMixin, UserCreationForm):
 class CustomUserUpdateForm(StyleFormMixin, ModelForm):
     class Meta:
         model = CustomUser
-        fields = ['username', 'email', ]  # добавьте необходимые поля
+        fields = [
+            "username",
+            "email",
+        ]  # добавьте необходимые поля
 
     # def __init__(self, *args, **kwargs):
     #     super(CustomUserUpdateForm, self).__init__(*args, **kwargs)
@@ -44,13 +44,17 @@ class CustomUserUpdateForm(StyleFormMixin, ModelForm):
 
 class PasswordResetRequestForm(forms.Form):
     """Форма запрашивает у пользователя email для восстановления пароля"""
+
     email = forms.EmailField(label="Введите ваш email")
 
 
 class SetNewPasswordForm(forms.Form):
     """Форма для ввода нового пароля"""
+
     new_password = forms.CharField(widget=forms.PasswordInput, label="Новый пароль")
-    confirm_password = forms.CharField(widget=forms.PasswordInput, label="Подтвердите пароль")
+    confirm_password = forms.CharField(
+        widget=forms.PasswordInput, label="Подтвердите пароль"
+    )
 
     def clean(self):
         cleaned_data = super().clean()
@@ -65,7 +69,7 @@ class CustomUserBlockUpdateForm(StyleFormMixin, ModelForm):
     class Meta:
         model = CustomUser
         # fields = "__all__"
-        fields = ['username', 'is_active']
+        fields = ["username", "is_active"]
 
         def __init__(self, *args, **kwargs):
             super(CustomUserBlockUpdateForm, self).__init__(*args, **kwargs)

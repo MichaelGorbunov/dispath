@@ -16,14 +16,13 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import include, path
 
 import mailing.urls
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path('mailing/', include('mailing.urls', namespace="mailing")),
-    path('users/', include('users.urls', namespace="users")),
-    path('', mailing.urls.HomePageView.as_view())
-
+    path("mailing/", include("mailing.urls", namespace="mailing")),
+    path("users/", include("users.urls", namespace="users")),
+    path("", mailing.urls.HomePageView.as_view()),
 ]
