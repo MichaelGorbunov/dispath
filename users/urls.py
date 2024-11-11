@@ -1,9 +1,10 @@
 from django.urls import path
 # from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.views import LogoutView
-from .views import RegisterView, UserUpdateView, CustomLoginView, email_verification, password_reset_confirm, \
-    password_reset_request, password_reset_done, password_reset_complete, password_reset_invalid, UsersListView, \
-    UserBlockUpdateView
+from .views import (RegisterView, UserUpdateView, CustomLoginView, email_verification, password_reset_confirm, \
+                    password_reset_request, password_reset_done, password_reset_complete, password_reset_invalid,
+                    UsersListView,
+                    UserBlockUpdateView)
 
 app_name = "users"
 
