@@ -6,7 +6,9 @@
         {% if user.is_authenticated %}
             <form method="post" action="{% url 'users:logout' %}" style="display: inline;">
                 {% csrf_token %}
+                <a class="p-2 btn btn-outline-primary" href="{% url 'users:update' %}">Редактировать профиль</a>
                 <button type="submit" class="p-2 btn btn-outline-primary">Выйти
+
                 </button>
             </form>
 
