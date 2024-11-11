@@ -27,9 +27,10 @@ def base(request):
     return render(request, 'mailing/base.html')
 
 
-class RecipientListView(ListView):
+class RecipientListView(LoginRequiredMixin,ListView):
     model = Recipient
     template_name = "mailing/recipient_list.html"
+    login_url = reverse_lazy('users:login')
     context_object_name = "recipients"
 
     def get_queryset(self):
@@ -45,11 +46,12 @@ class RecipientListView(ListView):
             return queryset
 
 
-class RecipientDeleteView(DeleteView):
+class RecipientDeleteView(LoginRequiredMixin,DeleteView):
     """удаление получателя"""
 
     model = Recipient
     template_name = "mailing/recipient_confirm_delete.html"
+    login_url = reverse_lazy('users:login')
     success_url = reverse_lazy('mailing:recipient_list')
 
 
@@ -69,48 +71,53 @@ class RecipientCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class RecipientUpdateView(UpdateView):
+class RecipientUpdateView(LoginRequiredMixin,UpdateView):
     """view для обновления получателя рассылки"""
     model = Recipient  # Указываем модель, с которой будет работать это представление
     form_class = RecipientForm  # Указываем форму, которая будет использоваться для ввода данных
+    login_url = reverse_lazy('users:login')
     template_name = 'mailing/recipient_form.html'  # Шаблон, который будет использоваться для отображения формы
     success_url = reverse_lazy(
         'mailing:recipient_list')  # URL, на который будет перенаправлен пользователь после успешной отправки формы
 
 
-class MessageListView(ListView):
+class MessageListView(LoginRequiredMixin,ListView):
     model = Message
     template_name = "mailing/message_list.html"
     context_object_name = "messages"
+    login_url = reverse_lazy('users:login')
 
     def get_queryset(self):
         queryset = MailingService.get_all_mesages()
         return queryset
 
 
-class MessageUpdateView(UpdateView):
+class MessageUpdateView(LoginRequiredMixin,UpdateView):
     """view для обновления сообщения"""
     model = Message  # Указываем модель, с которой будет работать это представление
     form_class = MessageForm  # Указываем форму, которая будет использоваться для ввода данных
     template_name = 'mailing/message_form.html'  # Шаблон, который будет использоваться для отображения формы
+    login_url = reverse_lazy('users:login')
     success_url = reverse_lazy(
         'mailing:message_list')  # URL, на который будет перенаправлен пользователь после успешной отправки формы
 
 
-class MessageCreateView(CreateView):
+class MessageCreateView(LoginRequiredMixin,CreateView):
     """view для создания сообщения"""
     model = Message  # Указываем модель, с которой будет работать это представление
     form_class = MessageForm  # Указываем форму, которая будет использоваться для ввода данных
     template_name = 'mailing/message_form.html'  # Шаблон, который будет использоваться для отображения формы
+    login_url = reverse_lazy('users:login')
     success_url = reverse_lazy(
         'mailing:message_list')  # URL, на который будет перенаправлен пользователь после успешной отправки формы
 
 
-class MessageDeleteView(DeleteView):
+class MessageDeleteView(LoginRequiredMixin,DeleteView):
     """удаление сообщения"""
 
     model = Message
     template_name = "mailing/message_confirm_delete.html"
+    login_url = reverse_lazy('users:login')
     success_url = reverse_lazy('mailing:message_list')
 
 
