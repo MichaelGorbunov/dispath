@@ -1,0 +1,62 @@
+[
+{
+    "model": "mailing.recipient",
+    "pk": 1,
+    "fields": {
+        "email": "ivanov@ws.ru",
+        "full_name": "Иванов Иван Иванович",
+        "comment": null,
+        "ownership": 2
+    }
+},
+{
+    "model": "mailing.recipient",
+    "pk": 2,
+    "fields": {
+        "email": "petrov@ws.ru",
+        "full_name": "Петров Петр Петрович",
+        "comment": null,
+        "ownership": 2
+    }
+},
+{
+    "model": "mailing.recipient",
+    "pk": 3,
+    "fields": {
+        "email": "vas@ws.ru",
+        "full_name": "Васильев Василий Васильевич",
+        "comment": null,
+        "ownership": 3
+    }
+},
+{
+    "model": "mailing.recipient",
+    "pk": 4,
+    "fields": {
+        "email": "serg@ws.ru",
+        "full_name": "Сергев Сергей Сергеевич",
+        "comment": null,
+        "ownership": 3
+    }
+},
+{
+    "model": "mailing.recipient",
+    "pk": 5,
+    "fields": {
+        "email": "al@ws.ru",
+        "full_name": "Алексеев Алексей Алексеевич",
+        "comment": null,
+        "ownership": 4
+    }
+},
+{
+    "model": "mailing.recipient",
+    "pk": 5,
+    "fields": {
+        "email": "vol@ws.ru",
+        "full_name": "Володин Владимир Владимирович",
+        "comment": null,
+        "ownership": 4
+    }
+}
+]

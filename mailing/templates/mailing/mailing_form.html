@@ -1,0 +1,37 @@
+<!-- recipient_form.html -->
+{% extends 'mailing/base.html' %}
+
+{% block title %}Добавить/Редактировать рассылки{% endblock %}
+
+{% block content %}
+{% if object%}
+<h4>Редактирование рассылки</h4>
+{% else %}
+<h4>Создание рассылки</h4>
+{% endif %}
+
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Сохранить</button>
+    <a href="{% url 'mailing:mailing_list' %}" class="btn btn-secondary">Отмена</a>
+
+
+    {% if object%}
+            {% if perms.users.mailing_permission %}
+                <a href="{% url 'mailing:mailing_delete' mailing.pk %}" class="btn btn-danger">Удалить</a>
+
+                <a href="{% url 'mailing:mailing_report' mailing.pk %}" class="btn btn-danger">Статистика</a>
+            {% endif %}
+
+
+    {% endif %}
+     {% if object%}
+    <a href="{% url 'mailing:mailing_send' mailing.pk %}" class="btn btn-danger">Запустить рассылку</a>
+    {% endif %}
+
+
+</form>
+{% endblock %}

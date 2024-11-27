@@ -1,0 +1,33 @@
+{% extends "mailing/base.html" %}
+
+{% block title %}
+{% if object%}
+Редактирование
+
+{% endif %}
+
+{% endblock %}
+
+
+
+
+{% block content %}
+{% if object%}
+<h4>Редактирование пользователя</h4>
+
+{% endif %}
+
+
+<!--  <h2>Регистрация</h2>-->
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+  {% if object%}
+    <button type="submit" class="btn btn-primary">Сохранить</button>
+    <a href="{% url 'mailing:home' %}" class="btn btn-danger">Отмена</a>
+
+  {% endif %}
+
+  </form>
+{% endblock %}
